@@ -1,0 +1,9 @@
+************* Module reload
+reload.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+reload.py:2:0: E0401: Unable to import 'flask' (import-error)
+reload.py:8:0: C0116: Missing function or method docstring (missing-function-docstring)
+reload.py:13:8: W0702: No exception type(s) specified (bare-except)
+
+------------------------------------------------------------------
+Your code has been rated at 2.73/10 (previous run: 2.73/10, +0.00)
+

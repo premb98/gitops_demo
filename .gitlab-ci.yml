@@ -1,0 +1,47 @@
+stages:
+  - pre_check
+  - build
+  - deploy
+
+image: rockylinux:9.3
+
+test:
+  stage: pre_check
+  script:
+    - export PYTHONPATH=.
+    - export FLASK_APP=web
+    - yum update -qy
+    - yum install --assumeyes python3-pip
+    - pip3 install Flask gunicorn pytest pytest-cov
+    - pytest tests --cov --cov-report term --cov-report html
+
+lint:
+  stage: pre_check
+  allow_failure: true
+  script:
+    - export PYTHONPATH=.
+    - export FLASK_APP=web
+    - yum update -qy
+    - yum install --assumeyes python3-pip
+    - pip3 install pylint
+    - echo "Linting scripts"
+    - pylint --ignore=venv *.py 
+  
+build:
+  stage: build
+  image: docker:25.0.4-dind
+  tags:
+    - mac_runner
+  before_script:
+    - echo "Docker Login"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+
+deploy job:
+  stage: deploy
+  script:
+    - yum update -qy
+    - echo "Deploying InProgress"
+    # - curl huseinhouse.com:9060/reload?password=husein123
